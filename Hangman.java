@@ -23,6 +23,11 @@ public class Hangman {
 	*/
 	ArrayList <Character> guessCharList = new ArrayList <Character> ();
 
+	/* This final ArrayList simply stores any guesses the user has made.
+	We will check user input for 'already guessed' chars here.
+	*/
+	ArrayList<String> guessesMadeList = new ArrayList <String> ();
+
 	// Standard Set Method for Secret Message
 	public String setSecretMessage(String message) {
 		secretMessage = message;
@@ -52,5 +57,18 @@ public class Hangman {
 				displayList.add("_");
 			}
 		}
+	}
+
+	/* This method will check if the user has already input that letter.
+	If so, the method will return true. Otherwise, false
+	*/
+	public boolean checkGuessForDuplicates (String inputString, ArrayList <String> list) {
+		for(int i=0;i<list.size();i++) {
+			String compareStr = list.get(i);
+			if(compareStr.equals(inputString)) {
+				return true;
+			}
+		}
+		return false;
 	}
 }

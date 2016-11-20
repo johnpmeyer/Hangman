@@ -3,6 +3,7 @@ import java.util.*;
 import java.awt.event.*;
 import java.awt.*;
 
+
 public class HangmanInterface extends JFrame{
 	private JButton newGameButton, enterGuessButton, clearButton;
 	private JLabel guessLabel, guessAreaLabel;
@@ -17,14 +18,6 @@ public class HangmanInterface extends JFrame{
 	public int correctInstances;
 
 	public static void main(String[] args) {
-		/*
-		Hangman demo = new Hangman();
-		demo.setSecretMessage("This message");
-		System.out.println(demo.getSecretMessage());
-		demo.setWordArrays(demo.secretWordList, demo.displayWordList);
-		System.out.println(demo.secretWordList);
-		System.out.println(demo.displayWordList);
-		*/
 		HangmanInterface demo = new HangmanInterface();
 		demo.setSize(600, 600);
 		demo.setLocationRelativeTo(null);
@@ -88,6 +81,7 @@ public class HangmanInterface extends JFrame{
 
 		guessArea = new JTextArea();
 		guessArea.setBounds(350, 450, 200, 75);
+		guessArea.setFont(new Font("Arial", Font.PLAIN, 24));
 		guessArea.setEditable(false);
 		window.add(guessArea);
 	}
@@ -111,16 +105,42 @@ public class HangmanInterface extends JFrame{
 
 		clearAll(hangman.secretWordList);
 		clearAll(hangman.displayWordList);
-		hangman.setSecretMessage(messageInput);
+		hangman.setSecretMessage(messageInput.toLowerCase());
 		hangman.setWordArrays(hangman.secretWordList, hangman.displayWordList);
 		displayGuesses(hangman.displayWordList);
 		System.out.println(hangman.getSecretMessage());
 	}
 
 	public void guessAction(ActionEvent e) {
+		/* The following lines take user input, convert it to a char for the purpose
+		of comparing to the secret word, calling isCharInString, and then checking
+		for duplicates, informing the user if there is indeed a duplicate
+		*/
+
+
 		guessInput = guessField.getText();
 		char guessInputChar = guessInput.charAt(0);
-		isCharInString(guessInputChar);
+		boolean checkDuplicateBoolean = hangman.checkGuessForDuplicates(guessInput, hangman.guessesMadeList);
+		if(checkDuplicateBoolean == true) {
+			JOptionPane.showMessageDialog(this, "You have already entered " + guessInput +
+			". Please try again.");
+			} else {
+			guessField.setText("");
+			guessField.requestFocusInWindow();
+			hangman.guessesMadeList.add(guessInput);
+
+			isCharInString(guessInputChar);
+
+			guessArea.setText("");
+			for(int i=0; i<hangman.guessesMadeList.size();i++) {
+				guessArea.append(hangman.guessesMadeList.get(i) + " ");
+			}
+
+			boolean checkWinnerBoolean = checkForWinner(hangman.displayWordList);
+			if(checkWinnerBoolean == false) {
+				JOptionPane.showMessageDialog(this, "You win!!!! Play again!");
+			}
+		}
 	}
 
 	private void clearAll(ArrayList list) {
@@ -145,5 +165,14 @@ public class HangmanInterface extends JFrame{
 
 		displayGuesses(hangman.displayWordList);
 		System.out.println(hangman.wrongGuesses);
+	}
+
+	private boolean checkForWinner(ArrayList <String> list) {
+		for(int i=0;i<list.size();i++) {
+			if(list.get(i).equals("_")) {
+				return true;
+			}
+		}
+		return false;
 	}
 }
