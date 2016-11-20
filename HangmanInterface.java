@@ -15,11 +15,10 @@ public class HangmanInterface extends JFrame{
 	private String messageInput;
 	private String guessInput;
 	private Character guessInputChar;
-	public int correctInstances;
 
 	public static void main(String[] args) {
 		HangmanInterface demo = new HangmanInterface();
-		demo.setSize(600, 600);
+		demo.setSize(800, 600);
 		demo.setLocationRelativeTo(null);
 		demo.createGUI();
 		demo.setTitle("Hangman Game");
@@ -34,7 +33,7 @@ public class HangmanInterface extends JFrame{
 		hangman = new Hangman();
 
 		newGameButton = new JButton("New Game");
-		newGameButton.setBounds(460, 25, 100, 25);
+		newGameButton.setBounds(660, 25, 100, 25);
 		window.add(newGameButton);
 		newGameButton.addActionListener(
 			new ActionListener() {
@@ -45,15 +44,15 @@ public class HangmanInterface extends JFrame{
 		);
 
 		guessLabel = new JLabel("Guess Here!");
-		guessLabel.setBounds(350, 75, 200, 25);
+		guessLabel.setBounds(550, 75, 200, 25);
 		window.add(guessLabel);
 
 		guessField = new JTextField();
-		guessField.setBounds(425, 75, 25, 25);
+		guessField.setBounds(625, 75, 25, 25);
 		window.add(guessField);
 
 		enterGuessButton = new JButton("Guess");
-		enterGuessButton.setBounds(460, 75, 100, 25);
+		enterGuessButton.setBounds(660, 75, 100, 25);
 		window.add(enterGuessButton);
 		enterGuessButton.addActionListener(
 			new ActionListener(){
@@ -64,23 +63,23 @@ public class HangmanInterface extends JFrame{
 		);
 
 		secretWordArea = new JTextArea();
-		secretWordArea.setBounds(200, 125, 350, 300);
+		secretWordArea.setBounds(400, 125, 350, 300);
 		secretWordArea.setFont(new Font("Arial", Font.PLAIN, 32));
 		secretWordArea.setEditable(false);
 		window.add(secretWordArea);
 
 		guessAreaLabel = new JLabel("Guesses Made:");
-		guessAreaLabel.setBounds(350, 425, 100, 25);
+		guessAreaLabel.setBounds(400, 425, 100, 25);
 		window.add(guessAreaLabel);
 
 		guessesLeftField = new JTextField();
-		guessesLeftField.setBounds(450, 425, 100, 25);
+		guessesLeftField.setBounds(550, 425, 100, 25);
 		guessesLeftField.setText("" + hangman.guessesLeft + " guesses left");
 		guessesLeftField.setEditable(false);
 		window.add(guessesLeftField);
 
 		guessArea = new JTextArea();
-		guessArea.setBounds(350, 450, 200, 75);
+		guessArea.setBounds(400, 450, 350, 75);
 		guessArea.setFont(new Font("Arial", Font.PLAIN, 24));
 		guessArea.setEditable(false);
 		window.add(guessArea);
@@ -105,10 +104,11 @@ public class HangmanInterface extends JFrame{
 
 		clearAll(hangman.secretWordList);
 		clearAll(hangman.displayWordList);
-		hangman.setSecretMessage(messageInput.toLowerCase());
+		hangman.setSecretMessage(messageInput);
 		hangman.setWordArrays(hangman.secretWordList, hangman.displayWordList);
+		hangman.wrongGuesses=0;
 		displayGuesses(hangman.displayWordList);
-		System.out.println(hangman.getSecretMessage());
+		guessArea.setText("");
 	}
 
 	public void guessAction(ActionEvent e) {
@@ -119,6 +119,7 @@ public class HangmanInterface extends JFrame{
 
 
 		guessInput = guessField.getText();
+		guessInput = guessInput.toLowerCase();
 		char guessInputChar = guessInput.charAt(0);
 		boolean checkDuplicateBoolean = hangman.checkGuessForDuplicates(guessInput, hangman.guessesMadeList);
 		if(checkDuplicateBoolean == true) {
@@ -151,9 +152,14 @@ public class HangmanInterface extends JFrame{
 
 	private void isCharInString(Character input) {
 		int i=0;
-		correctInstances = 0;
+		int correctInstances = 0;
 		while(i<hangman.secretWordList.size()){
-			if(input == hangman.secretWordList.get(i)) {
+			Character secretWordChar = hangman.secretWordList.get(i);
+			if(Character.isUpperCase(secretWordChar)==true) {
+				input = Character.toUpperCase(input);
+			}
+
+			if(input == secretWordChar) {
 				hangman.displayWordList.set(i, Character.toString(input));
 				correctInstances++;
 			}
